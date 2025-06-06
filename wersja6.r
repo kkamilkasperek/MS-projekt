@@ -16,7 +16,7 @@ critic_value_hellwig_simple <- function(n) {
   return(res)
 }
 
-hellwig_test <- function(x, hypothesis_type = c("simple", "complex"), mean = NULL, sigma = NULL, m = NULL, test_number = NA) {
+hellwig_test <- function(x, hypothesis_type = c("simple", "complex"), x_mean = NULL, x_sigma = NULL, m = NULL, test_number = NA) {
   hypothesis_type <- match.arg(hypothesis_type) # rodzaj hipotezy
   n <- length(x)
 
@@ -25,17 +25,17 @@ hellwig_test <- function(x, hypothesis_type = c("simple", "complex"), mean = NUL
     }
   
   if (hypothesis_type == "simple") {
-    if (is.null(mean) || is.null(sigma)) {
+    if (is.null(x_mean) || is.null(x_sigma)) {
       stop("Dla hipotezy prostej należy podać znane wartości mu i sigma.")
     }
     
-    u <- (x - mean) / sigma
+    u <- (x - x_mean) / x_sigma
     critical_value <- critic_value_hellwig_simple(n)
 
   } else if (hypothesis_type == "complex") {
-    mean <- mean(x)
-    s <- sd(x)
-    u <- (x - mean) / s
+    x_mean <- mean(x)
+    x_sigma <- sd(x)
+    u <- (x - x_mean) / x_sigma
     critical_value <- critic_value_hellwig_complex(n)
   }
   
@@ -82,7 +82,7 @@ run_hellwig_tests <- function(n = 25, number_of_tests = 10, mean = 0, sigma = 1,
       x_sample <- dist_fun()
       
         result_complex <- hellwig_test(x_sample, hypothesis_type = "complex", test_number = i)
-        result_simple  <- hellwig_test(x_sample, hypothesis_type = "simple", mean = mean, sigma = sigma, test_number = i)
+        result_simple  <- hellwig_test(x_sample, hypothesis_type = "simple", x_mean = mean, x_sigma = sigma, test_number = i)
 
       result_rows <- rbind(result_rows, result_complex, result_simple)
     }
